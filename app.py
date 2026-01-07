@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-DB_NAME = 'students.db'
+DB_NAME = "books.db"
 
 def connectdb():
     conn = sqlite3.connect(DB_NAME)
@@ -11,11 +11,13 @@ def connectdb():
 
 def init_db():
     conn = connectdb()
-    conn.execute('''CREATE TABLE IF NOT EXISTS books
-                   id INTEGER PRIMARY KEY AUTOINCREMENT,
-                   judul VARCHAR(100) NOT NULL,
-                 penulis VARCHAR(100) NOT NULL
-             );''')
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            judul VARCHAR(100) NOT NULL,
+            penulis VARCHAR(100) NOT NULL
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -24,7 +26,7 @@ def index():
     conn = connectdb()
     books = conn.execute("SELECT * FROM books").fetchall()
     conn.close()
-    return render_template('index.html')
+    return render_template('index.html', books=books)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
